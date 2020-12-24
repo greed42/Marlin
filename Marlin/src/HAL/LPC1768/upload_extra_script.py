@@ -9,6 +9,7 @@ target_filename = "FIRMWARE.CUR"
 target_drive = "REARM"
 
 import os,getpass,platform
+import subprocess
 
 current_OS = platform.system()
 Import("env")
@@ -114,6 +115,9 @@ def before_upload(source, target, env):
 		if target_file_found or target_drive_found:
 			env.Replace(UPLOAD_PORT=upload_disk)
 			print('\nUpload disk: ', upload_disk, '\n')
+			def eject_disk(source, target, env):
+				subprocess.run(['diskutil', 'eject', upload_disk])
+			env.AddPostAction('upload', eject_disk)
 		else:
 			print_error('Autodetect Error')
 
