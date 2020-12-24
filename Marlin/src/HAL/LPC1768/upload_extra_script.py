@@ -11,6 +11,7 @@ target_drive = "REARM"
 import os
 import getpass
 import platform
+import subprocess
 
 current_OS = platform.system()
 Import("env")
@@ -138,6 +139,10 @@ try:
 				UPLOAD_PORT=upload_disk
 			)
 			print('\nupload disk: ', upload_disk, '\n')
+
+			def eject_disk(source, target, env):
+				subprocess.run(['diskutil', 'eject', upload_disk])
+			env.AddPostAction('upload', eject_disk)
 		else:
 			print_error('Autodetect Error')
 
